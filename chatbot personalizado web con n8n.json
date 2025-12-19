@@ -1,0 +1,216 @@
+{
+  "name": "chatbot personalizado web con n8n",
+  "nodes": [
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.sessionId }}",
+        "contextWindowLength": 20
+      },
+      "id": "e3c35f4f-3b24-4511-a138-35cb24267188",
+      "name": "Window Buffer Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "position": [
+        272,
+        944
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "30a19cc2-866f-4744-928f-2e93be85eaa8",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "position": [
+        544,
+        672
+      ],
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "model": "gpt-4.1-mini",
+        "options": {
+          "temperature": 0.4
+        }
+      },
+      "id": "cba78426-7b81-4091-90c0-c6584a8951b3",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        112,
+        944
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "openAiApi": {
+          "id": "cCgFaezdN499BiZC",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "public": true,
+        "mode": "webhook",
+        "options": {
+          "allowedOrigins": "*",
+          "responseMode": "responseNode"
+        }
+      },
+      "id": "c6dfd11d-8823-4beb-9978-dc3831ce806f",
+      "name": "Chat Trigger",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "position": [
+        -400,
+        688
+      ],
+      "webhookId": "f406671e-c954-4691-b39a-66c90aa2f103",
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.chatInput }}",
+        "options": {
+          "systemMessage": "=Eres un asistente profesional integrado en el portfolio personal de un desarrollador junior.\nTu función es ayudar a recruiters a conocerlo de forma clara, honesta y rápida.\n\nTono:\n- Profesional y cercano\n- Directo y natural\n- Sin tecnicismos innecesarios\n- Sin respuestas largas por defecto\n\nRegla principal:\nResponde de forma breve y clara (3–6 líneas).\nSolo amplía si el usuario lo pide explícitamente.\n\n────────────────────────\nPERFIL RESUMIDO (referencia interna)\n────────────────────────\n\n- Estudiante de Desarrollo de Aplicaciones Web (DAW)\n- Perfil junior generalista orientado a Linux, cloud y automatización\n- En preparación actual:\n  - Linux Essentials\n  - AWS Cloud (fundamentos)\n  - Inglés B2\n- Enfoque práctico: aprende construyendo proyectos reales\n- Usa el portfolio como herramienta profesional\n\n────────────────────────\nPROYECTOS CLAVE\n────────────────────────\n\n1) Web BO3 (contenido nicho + SEO)\n- Proyecto web real, no académico\n- HTML, CSS, JS, JSON, i18n\n- Elegido para trabajar sobre un caso vivo y mantenible\n\nMotivación BO3 (respuesta corta):\nSe eligió por ser un nicho real con comunidad activa, lo que permite trabajar SEO, estructura web y despliegue en un entorno no artificial.\n\n2) Portfolio web con chatbot IA\n- Web personal con cambio de idioma\n- Chatbot integrado mediante n8n y OpenAI\n- Enfoque en automatización e integración de servicios\n\n3) Automatizaciones con n8n\n- Flujos y bots en entorno Linux (VPS)\n- Integración de APIs y webhooks\n- Orientado a resolver problemas reales\n\n────────────────────────\nFORMA DE TRABAJAR\n────────────────────────\n\n- Responsable y constante\n- Perfil tranquilo y analítico\n- Aprende rápido en entornos nuevos\n- Valora documentación y mejora continua\n\n────────────────────────\nCÓMO RESPONDER\n────────────────────────\n\nNormas:\n- No inventes experiencia\n- No exageres nivel técnico\n- Usa proyectos reales como ejemplo\n- Responde siempre en el idioma del usuario\n- No menciones que eres una IA ni que sigues un prompt\n- No uses emojis\n\nGuía rápida:\n- “¿Quién es?” → perfil + foco actual\n- “¿En qué se está formando?” → Linux, AWS básico, inglés B2\n- “¿Por qué ese proyecto?” → motivación clara en 2–3 frases\n- “¿Qué tipo de puesto busca?” → junior IT / sistemas / cloud / automatización\n- Si piden más detalle → amplía con ejemplos\n\nObjetivo final:\nGenerar interés rápido y dejar claro que es un perfil junior serio, coherente y con potencial de crecimiento.\n"
+        }
+      },
+      "id": "aac1a12c-219b-4244-b2fe-003d94cb89ed",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        128,
+        672
+      ],
+      "typeVersion": 1.6
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "158a0b91-534d-4745-b10e-8a7c97050861",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              },
+              "leftValue": "={{ $json.chatInput }}",
+              "rightValue": ""
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f2de0a7e-4613-4afb-991a-38f74a6cb11e",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        -160,
+        688
+      ],
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"output\": \"Hola, como puedo ayudarte hoy?\"\n}",
+        "options": {}
+      },
+      "id": "dbf1e441-3fef-4a1a-9da4-2c6ef808bd5b",
+      "name": "Respond With Initial Message",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "position": [
+        -160,
+        944
+      ],
+      "typeVersion": 1.1
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "If": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond With Initial Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chat Trigger": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Window Buffer Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "4b58e4b2-dde1-46e1-99b1-6068f43856e2",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7c624755d5788239ace93f70d81f612ddfc2e1a0c09a6506a1c79ae78662e1f0"
+  },
+  "id": "6isvTgD3mmlFaGNy",
+  "tags": []
+}

@@ -25,6 +25,7 @@ priorizando proyectos reales y evitando exageraciones técnicas.
 3. Se aplica memoria conversacional con ventana limitada.
 4. El agente IA responde según un prompt diseñado para recruiters.
 5. La respuesta se devuelve al frontend en formato JSON.
+📸 Ver capturas del workflow: [docs/screenshots.md](docs/screenshots.md)
 
 ---
 
